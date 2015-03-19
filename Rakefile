@@ -1,5 +1,6 @@
 require 'rake'
 require 'rspec/core/rake_task'
+require_relative 'lib/sunlight_legislators_importer'
 require_relative 'db/config'
 
 
@@ -20,6 +21,11 @@ task "db:migrate" do
   ActiveRecord::Migrator.migrate(ActiveRecord::Migrator.migrations_paths, ENV["VERSION"] ? ENV["VERSION"].to_i : nil) do |migration|
     ENV["SCOPE"].blank? || (ENV["SCOPE"] == migration.scope)
   end
+end
+
+desc "populate the test database with sample data"
+task "db:populate" do
+ SunlightLegislatorsImporter.import(File.dirname(__FILE__) + "/db/data/legislators.csv")
 end
 
 desc 'Retrieves the current schema version number'

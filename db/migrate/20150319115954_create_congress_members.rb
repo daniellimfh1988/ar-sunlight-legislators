@@ -2,22 +2,27 @@ require_relative '../config'
 
 class CreateCongressMembers < ActiveRecord::Migration
   def change
-    create_table :senators do |t|
+    create_table :congress_members do |t|
       t.string :title
-      t.string :first_name
-      t.string :middle_name
-      t.string :last_name
+      t.string :firstname
+      t.string :middlename
+      t.string :lastname
       t.string :name_suffix
       t.string :nickname
-      t.string :party, :limit => 1
-      t.string :state, :limit => 2
+      t.string :party
+      t.string :state
       t.string :district
       t.string :in_office
-      t.string :gender, :limit => 1
+      t.string :gender
       t.string :phone
       t.string :fax
       t.string :website
       t.string :webform
+      t.string :congress_office
+      t.string :bioguide_id
+      t.string :votesmart_id
+      t.string :fec_id
+      t.string :govtrack_id
       t.string :crp_id
       t.string :twitter_id
       t.string :congresspedia_url
