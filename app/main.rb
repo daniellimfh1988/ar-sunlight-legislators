@@ -1,4 +1,33 @@
 require_relative '../app/models/congressmember'
+require_relative '../app/models/rep'
+require_relative '../app/models/sen'
+require 'twitter'
+require_relative '../app/models/tweet'
+
+Sen.create(title: 'Sen')
+Rep.create(title: 'Rep')
+
+client = Twitter::REST::Client.new do |config|
+  config.consumer_key        = "XXX"
+  config.consumer_secret     = "XXX"
+  config.access_token        = "XXX"
+  config.access_token_secret = "XXX"
+end
+
+puts "Whose tweets do you want to see? Type in their ID: "
+input = gets.chomp
+  @congress_member = CongressMember.find_by(id: input)
+  @sen_twitter_id = @congress_member.twitter_id
+  if @sen_twitter_id.empty?
+    puts "This congressman has no Twitter!"
+  else
+    x = client.user_timeline(@sen_twitter_id).take(10)
+    x.each_with_index do |tweet, index|
+      puts "#{index+1}. #{client.status(tweet).text}"
+        Tweet.create(text: tweet.text, unique_tweet_id: tweet.id,
+          legislator_id: @congress_member.id)
+  end
+end
 
 def by_state
   random_state =  CongressMember.find(rand(CongressMember.count + 1)).state
@@ -54,7 +83,7 @@ def delete_inactive
   delete_inactive_representatives = CongressMember.destroy_all(in_office: '0', title: 'Rep')
 end
 
-   # active_senators = CongressMember.where(in_office: '1', title: 'Sen').count
+   active_senators = CongressMember.where(in_office: '1', title: 'Sen').count
 
-  # CongressMember.where(in_office: '1', title: 'Sen').group(:state).order("COUNT(*) DESC")
-# by_active
+  CongressMember.where(in_office: '1', title: 'Sen').group(:state).order("COUNT(*) DESC")
+by_active
